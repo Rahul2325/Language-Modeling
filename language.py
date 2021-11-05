@@ -207,7 +207,17 @@ Returns: str
 '''
 from random import choices
 def generateTextFromUnigrams(count, words, probs):
-    return
+    str_=""
+    for i in range(count):
+        temp = choices(words, weights=probs)
+        # print(temp)
+        str_+=temp[0]+" "
+    return str_
+# words = [ "hello", "world", "again" ]
+# probs = [ 2/5, 2/5, 1/5 ]
+# sentence = generateTextFromUnigrams(5, words, probs)
+# print(sentence)
+    
 
 
 '''
@@ -391,4 +401,5 @@ if __name__ == "__main__":
     test.testBuildUnigramProbs()
     test.testBuildBigramProbs()
     test.testGetTopWords()
+    test.testGenerateTextFromUnigrams()
     
