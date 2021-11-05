@@ -110,7 +110,15 @@ Parameters: 2D list of strs
 Returns: dict mapping strs to (dicts mapping strs to ints)
 '''
 def countBigrams(corpus):
-    return
+    dict_ = {} 
+    for i in corpus: 
+        for j in range(len(i)-1): 
+            if i[j] not in dict_: 
+                dict_[i[j]] = {} 
+            if i[j+1] not in dict_[i[j]]: 
+                dict_[i[j]][i[j+1]] = 1 
+            else: dict_[i[j]][i[j+1]] +=1 
+    return dict_
 
 
 ### WEEK 2 ###
@@ -122,7 +130,14 @@ Parameters: list of strs
 Returns: list of floats
 '''
 def buildUniformProbs(unigrams):
-    return
+    dict_={}
+    temp_list=[]
+    for i  in unigrams:
+        if i not in dict_:
+            dict_[i]=1
+    for x,y in dict_.items():
+        temp_list.append(y/len(dict_))
+    return temp_list
 
 
 '''
@@ -132,7 +147,11 @@ Parameters: list of strs ; dict mapping strs to ints ; int
 Returns: list of floats
 '''
 def buildUnigramProbs(unigrams, unigramCounts, totalCount):
-    return
+    result_list=[]
+    for i in unigrams:
+        if i in unigramCounts:
+            result_list.append(unigramCounts[i]/totalCount)
+    return result_list
 
 
 '''
@@ -142,7 +161,18 @@ Parameters: dict mapping strs to ints ; dict mapping strs to (dicts mapping strs
 Returns: dict mapping strs to (dicts mapping strs to (lists of values))
 '''
 def buildBigramProbs(unigramCounts, bigramCounts):
-    return
+    nesteddict = {}
+    for prevWord in bigramCounts:
+        word = []
+        prob = []
+        for key,value in bigramCounts[prevWord].items():
+            word.append(key)
+            prob.append(value / unigramCounts[prevWord]) 
+            temp = {}
+            temp["words"] =word
+            temp["probs"] = prob
+        nesteddict[prevWord] = temp
+    return nesteddict
 
 
 '''
@@ -151,8 +181,22 @@ getTopWords(count, words, probs, ignoreList)
 Parameters: int ; list of strs ; list of floats ; list of strs
 Returns: dict mapping strs to floats
 '''
+import operator
 def getTopWords(count, words, probs, ignoreList):
-    return
+    result_dict={}
+    temp_dict={}
+    for i in range(len(words)):
+        if words[i] not in ignoreList:
+            temp_dict[words[i]]=probs[i]
+    sorted_hastags = dict( sorted(temp_dict.items(), key=operator.itemgetter(1),reverse=True))
+    for k,y in sorted_hastags.items():
+        if len(result_dict) != count and k not in ignoreList:
+            result_dict[k]=y
+    return result_dict 
+# print(getTopWords(3, 
+#         [ "hello", "and", "welcome", "to", "15-110", ".", "we're", "happy", "have", "you"], 
+#         [ 1/12, 1/12, 1/12, 2/12, 1/12, 2/12, 1/12, 1/12, 1/12, 1/12 ], 
+#         [ ".", "hello", "and", "15-110", "we're", "have", "you"]))
 
 
 '''
@@ -342,4 +386,9 @@ if __name__ == "__main__":
     test.testCountUnigrams()
     test.testGetStartWords()
     test.testCountStartWords()
+    test.testCountBigrams()
+    test.testBuildUniformProbs()
+    test.testBuildUnigramProbs()
+    test.testBuildBigramProbs()
+    test.testGetTopWords()
     
